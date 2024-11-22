@@ -79,6 +79,15 @@ describe "Tests Emociones" {
     assert.notThat(alegria.puedeLiberarse()) // eventos ahora es par pero la intensidad es menor a el valor minimo (50)
     assert.equals(40, alegria.intensidad()) // la intensidad no cambio
   }
+
+  test "Puedo cambiar el valor minimo de intensidad en medio del test" {
+    const desagrado = new Desagrado(intensidad = 10)
+    const eventoDesagrado= new Evento (impacto = 5, descripcion = "asquito")
+    desagrado.eventosVividos(60)
+    assert.notThat(desagrado.puedeLiberarse()) // no tiene la intensidad minima
+    valorIntensidadElevada.valor(2)
+    assert.that(desagrado.puedeLiberarse())
+  }
 }
 
 describe "Test Personas" {
@@ -88,8 +97,13 @@ describe "Test Personas" {
     assert.notThat(lucas.esAdolescente())
     assert.that(juan.esAdolescente())
   }
-  test "Marcos puede Liberarse" {
+  test "Marcos esta por explotar, pero al agregar a tristeza ya no" {
     const marcos = new Persona(edad = 20)
-    assert.that(marcos.puedeLiberarse())
+    const alegria = new Alegria (intensidad = 90)
+    marcos.nuevaEmocion(alegria)
+    assert.that(marcos.estaPorExplotar())
+    const tristeza = new Alegria (intensidad = 33)
+    marcos.nuevaEmocion(tristeza)
+    assert.notThat(marcos.estaPorExplotar())
   }
 }

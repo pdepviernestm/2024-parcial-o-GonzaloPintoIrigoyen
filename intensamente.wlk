@@ -106,7 +106,7 @@ class Temor inherits Desagrado {} // para poder tenerlas por separado hago esto
 
 // Ansiedad es como Temor, pero puede liberarse (sin cumplir las otras condiciones) si su intensidad es un numero Primo
 // ademas se lleva un contador de las veces que se libero, si el numero es impar su intensidad sube en vez de bajar
-class Ansieda inherits Desagrado {
+class Ansieda inherits Temor {
   var property vecesLiberada = 0
 
   override method puedeLiberarse() = super() && self.intensidadMultiplo10()
@@ -118,18 +118,6 @@ class Ansieda inherits Desagrado {
     if (self.vecesLiberadaImpar()) 
       self.intensidad(intensidad + evento.impacto())
     else 
-      self.intensidad(intensidad - evento.impacto()) // no me dejaba poner super()
+      super(evento)
   }
 }
-
-/*
-El concepto de polimorfismo fue util ya que me permite no tener que realizar verificaciones para cada emocion, 
-como todas reciben el mismo mensaje y saben que deben hacer, simplemente les envio que evento ocurrio y cada una
-gesiona como debe actuar, ya que ellas son quienes conocen su estado interno. 
-Me permite simplificar y optimicar mucho el codigo al no tener que utilizar verificaciones previas a cada mensaje
-
-Herencia tambien me permite evitar repetir logica, y de esta forma reducir la cantidad de codigo que escribo
-unificando metodos y variables comunes de distintas clases en una superclase superior a estas. 
-De esta forma, ademas, cualquier cambio en esta clase superior se refleja en quienes heredan, facilitando
-correciones y cambio de codigo
-*/
