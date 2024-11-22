@@ -1,9 +1,95 @@
-import example.pepita
+import intensamente.*
+// --- Test Examen Punto 6 --- //
+describe "Tests punto 6" {
 
-describe "group of tests for pepita" {
+  const valen = new Persona(edad = 10) 
+  const lucho = new Persona(edad = 60)
+  const bruno = new Persona(edad = 22)
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+  method agregarEmociones() {
+    const furia = new Furia()
+    furia.aprenderPalabrota("palabrota")
+    valen.nuevaEmocion(furia)
+    const tristeza = new Tristeza(intensidad = 1)
+    lucho.nuevaEmocion(tristeza)
+    const alegria = new Alegria(intensidad = 80, eventosVividos = 2)
+    bruno.nuevaEmocion(alegria)
+  }
+  
+  test "Bruno y Valen estan por explotar pero luego del evento ya no lo estan" {
+    const grupo = new GrupoPersonas(integrantes = [valen, lucho, bruno])
+    const eventoFutbol = new Evento(impacto = 20, descripcion = "jugar al futbol")
+    self.agregarEmociones()
+    assert.that(valen.estaPorExplotar())
+    assert.that(bruno.estaPorExplotar())
+    assert.notThat(lucho.estaPorExplotar())
+    grupo.vivirEvento(eventoFutbol)
+    assert.notThat(valen.estaPorExplotar()) // queda con 
+    assert.notThat(bruno.estaPorExplotar()) // olvida la palabrota
+    assert.notThat(lucho.estaPorExplotar())
+  }
+}
+
+// --- TEST AUXILIARES --- //
+describe "Tests Emociones" {
+  test "Furia aprende palabrotas, no se repiten, y puede olvidarlas" {
+    const furia = new Furia ()
+    furia.aprenderPalabrota("vaca")
+    furia.aprenderPalabrota("nueva")
+    furia.aprenderPalabrota("loco")
+    furia.aprenderPalabrota("loco")
+    assert.equals(3, furia.palabrotas().size())
+
+    furia.olvidarPalabrota()
+    assert.equals(2, furia.palabrotas().size())
+    assert.that(furia.palabrotas().contains("nueva"))
+    assert.that(furia.palabrotas().contains("loco"))
+    assert.notThat(furia.palabrotas().contains("vaca"))
+  }
+  test "Furia puede Liberarse, pero al hacerlo ya no puede mas" {
+    const furia = new Furia()
+    const eventoFuria = new Evento (impacto = 10, descripcion = "pelea")
+
+    furia.aprenderPalabrota("cacacacaca")
+    assert.that(furia.puedeLiberarse())
+
+    furia.vivirEvento(eventoFuria)
+    assert.notThat(furia.puedeLiberarse())
+    assert.that(furia.palabrotas().size() == 0) // olvido la palabrota
+    assert.equals(1, furia.eventosVividos())
+    assert.equals(90, furia.intensidad())
+
+    furia.vivirEvento(eventoFuria)
+    assert.equals(2, furia.eventosVividos())
+    assert.equals(90, furia.intensidad()) // no cambia porque no puede liberarse
   }
 
+  test "Alegria no tiene intensidad negativa" {
+    const alegria = new Alegria(intensidad = 60)
+    const eventoAlegria = new Evento (impacto = 100, descripcion = "vacaciones")
+    assert.that(alegria.puedeLiberarse())
+    
+    alegria.vivirEvento(eventoAlegria) // 60 - 100 = -40, tendria que tener entonces 40 de intensidad
+    assert.that(alegria.eventosVividos() == 1)
+    assert.notThat(alegria.puedeLiberarse()) // eventos impar
+    assert.equals(40, alegria.intensidad())
+    
+    alegria.vivirEvento(eventoAlegria) // como eventos == 1, impar, no se libera
+    assert.that(alegria.eventosVividos() == 2)
+    assert.notThat(alegria.puedeLiberarse()) // eventos ahora es par pero la intensidad es menor a el valor minimo (50)
+    assert.equals(40, alegria.intensidad()) // la intensidad no cambio
+  }
+}
+
+describe "Test Personas" {
+  test "Lucas no es Adolescente pero Juan si" {
+    const lucas = new Persona (edad = 40)
+    const juan = new Persona (edad = 15)
+    assert.notThat(lucas.esAdolescente())
+    assert.that(juan.esAdolescente())
+  }
+  test "Marcos puede Liberarse" {
+    const marcos = new Persona(edad = 20)
+    assert.that(marcos.puedeLiberarse())
+  }
 }
