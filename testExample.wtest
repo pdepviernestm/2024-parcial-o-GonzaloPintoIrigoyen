@@ -39,6 +39,7 @@ describe "Tests Emociones" {
     furia.aprenderPalabrota("loco")
     furia.aprenderPalabrota("loco")
     assert.equals(3, furia.palabrotas().size())
+    assert.notThat(furia.conocePalabrota7Letras())
 
     furia.olvidarPalabrota()
     assert.equals(2, furia.palabrotas().size())
@@ -96,6 +97,10 @@ describe "Test Personas" {
     const juan = new Persona (edad = 15)
     assert.notThat(lucas.esAdolescente())
     assert.that(juan.esAdolescente())
+  }
+  test "Si no tengo emociones no puedo explotar" {
+    const marcos = new Persona(edad = 20)
+    assert.notThat(marcos.estaPorExplotar())
   }
   test "Marcos esta por explotar, pero al agregar a tristeza ya no" {
     const marcos = new Persona(edad = 20)

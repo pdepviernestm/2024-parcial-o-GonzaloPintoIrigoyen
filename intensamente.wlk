@@ -8,11 +8,12 @@ class Persona {
   var property edad
   const property emociones = []
 
-  method esAdolescente() = edad.between(12,18) // termina con los 19 asi que no los considero
+  method esAdolescente() = edad.between(12,18) // termina al cumplir 19 asi que no los considero
 
   method nuevaEmocion(emocion) { emociones.add(emocion) }
 
-  method estaPorExplotar() = emociones.all{p => p.puedeLiberarse()}
+  method estaPorExplotar() = emociones.all{p => p.puedeLiberarse()} && not emociones.isEmpty()
+  // para que si no tengo emociones reconozca que no puedo explotar
 
   method vivirEvento(evento) { emociones.forEach{e => e.vivirEvento(evento)} }
 }
@@ -32,9 +33,7 @@ class Evento {
   const property descripcion
 }
 
-
 // --- Emociones --- //
-
 class Emocion {
   var property eventosVividos = 0
   method intensidadElevada(intensidad) = intensidad > valorIntensidadElevada.valor()
